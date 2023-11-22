@@ -2,13 +2,26 @@ import { useState } from "react";
 import { Switch, Route, NavLink } from "react-router-dom";
 import Movie from "./components/Movie";
 import FavMovie from "./components/FavMovie";
+import { useSelector, useDispatch } from "react-redux";
+import { afterMovie, addFavorite, beforeMovie, basaDon } from "./action";
 
 function App() {
-  const [sira, setSira] = useState(0);
-  const favMovies = [];
+  // const [sira, setSira] = useState(0);
+  // const favMovies = [];
+  const dispatch = useDispatch();
+  const movies = useSelector((store) => store.movies);
+  const sira = useSelector((store) => store.sira);
+  const favMovies = useSelector((store) => store.favourites);
 
   function sonrakiFilm() {
-    setSira(sira + 1);
+    // setSira(sira + 1);
+    dispatch(afterMovie());
+  }
+  function öncekiFilm() {
+    dispatch(beforeMovie());
+  }
+  function ilkFilm() {
+    dispatch(basaDon());
   }
 
   return (
@@ -27,12 +40,26 @@ function App() {
 
           <div className="flex gap-3 justify-end py-3">
             <button
+              onClick={ilkFilm}
+              className="select-none px-4 py-2 border border-blue-700 text-blue-700 hover:border-blue-500 hover:text-blue-500"
+            >
+              Başa Dön
+            </button>
+            {sira > 0 && (
+              <button
+                onClick={öncekiFilm}
+                className="select-none px-4 py-2 border border-blue-700 text-blue-700 hover:border-blue-500 hover:text-blue-500"
+              >
+                Önceki
+              </button>
+            )}
+            <button
               onClick={sonrakiFilm}
               className="select-none px-4 py-2 border border-blue-700 text-blue-700 hover:border-blue-500 hover:text-blue-500"
             >
               Sıradaki
             </button>
-            <button className="select-none px-4 py-2 bg-blue-700 hover:bg-blue-600 text-white">
+            <button className="select-none px-4 py-2 bg-blue-700 hover:bg-blue-600 text-white" onClick={() => dispatch(addFavorite(movies[sira]))}>
               Listeme ekle
             </button>
           </div>
